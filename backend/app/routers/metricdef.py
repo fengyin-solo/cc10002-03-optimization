@@ -58,6 +58,15 @@ def run_action(entry_id: int, payload: EntryPayload) -> ActionResult:
     return ActionResult(ok=True, message=message, entry=entry)
 
 
+@router.put("/{entry_id}", response_model=ActionResult)
+def update_entry(entry_id: int, payload: EntryPayload) -> ActionResult:
+    """修改指标口径字段（如口径版本）；变化即推进修订号，引用方旧缓存自动失效。"""
+    entry, message = service.update_entry(entry_id, payload.values)
+    if entry is None:
+        return ActionResult(ok=False, message=message)
+    return ActionResult(ok=True, message=message, entry=entry)
+
+
 @router.get("/export")
 def export_entries() -> dict[str, Any]:
     """导出指标定义清单：返回当前过滤条件下的全量数据。"""

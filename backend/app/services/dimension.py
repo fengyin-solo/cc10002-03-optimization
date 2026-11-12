@@ -44,7 +44,22 @@ class DimensionService:
         entry["pending"] = True
         entry["abnormal"] = False
         rows.append(entry)
+        store.bump_revision(MODULE)
         return entry, []
+
+    def update_entry(self, entry_id: int, values: dict[str, Any]) -> tuple[dict[str, Any] | None, str]:
+        """修改维度字段（如维度键列、拉链策略）；字段变化即推进修订号，旧版本缓存失效。"""
+        entry = store.find(MODULE, entry_id)
+        if entry is None:
+            return None, f"分析维度 {entry_id} 不存在或已归档"
+        changed = False
+        for field in ("维度编号", "维度名称", "数据来源表", "维度键列", "层级关系", "历史拉链策略", "刷新周期", "默认取值"):
+            if field in values and str(values.get(field) or "") != str(entry.get(field) or ""):
+                entry[field] = values.get(field)
+                changed = True
+        if changed:
+            store.bump_revision(MODULE)
+        return entry, "分析维度已更新" if changed else "分析维度无变化"
 
     def run_action(self, entry_id: int, action: str) -> tuple[dict[str, Any] | None, str]:
         entry = store.find(MODULE, entry_id)
@@ -58,4 +73,5 @@ class DimensionService:
         entry["status"] = target
         entry["pending"] = target != STATUS_ORDER[-1]
         entry["abnormal"] = action in NEGATIVE_ACTIONS
+        store.bump_revision(MODULE)
         return entry, f"分析维度已{action}"

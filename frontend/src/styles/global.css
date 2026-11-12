@@ -33,3 +33,78 @@ body { margin: 0; background: #f6f8fb; color: #1f2937; }
 .link { border: none; background: none; color: var(--brand); cursor: pointer; padding: 0; }
 .page-foot { display: flex; justify-content: space-between; margin-top: 8px; font-size: 12px; color: var(--muted); }
 .error-text { color: #b42318; }
+
+/* ===== 聚合依赖校验：候选选择、抽屉编辑、校验预览 ===== */
+.dup-banner {
+  display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+  background: #fffaeb; border: 1px solid #fedf89; border-radius: 8px;
+  padding: 8px 12px; margin-bottom: 12px; font-size: 13px;
+}
+.dup-chip { background: #fef0c7; border-radius: 999px; padding: 2px 10px; }
+
+.drawer-mask {
+  position: fixed; inset: 0; background: rgba(15, 23, 42, 0.45);
+  display: flex; justify-content: flex-end; z-index: 50;
+}
+.drawer {
+  width: min(920px, 92vw); height: 100%; background: #f8fafc;
+  box-shadow: -8px 0 24px rgba(15, 23, 42, 0.18);
+  display: flex; flex-direction: column; overflow: hidden;
+}
+.drawer-head {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 14px 18px; background: #fff; border-bottom: 1px solid var(--border);
+}
+.drawer-head h3 { margin: 0; font-size: 16px; }
+.drawer-body { padding: 16px 18px; overflow-y: auto; }
+
+.form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 14px; }
+.form-item { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: var(--muted); }
+.form-item.wide { grid-column: 1 / -1; }
+.form-item input {
+  border: 1px solid var(--border); border-radius: 6px; padding: 7px 10px; font-size: 13px;
+}
+.form-item input:disabled { background: #f1f5f9; color: var(--muted); }
+
+.candidate-block { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 14px; }
+.candidate-picker { background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 10px; }
+.candidate-title { display: flex; justify-content: space-between; gap: 8px; align-items: center; font-size: 12px; color: var(--muted); margin-bottom: 8px; }
+.candidate-title input { border: 1px solid var(--border); border-radius: 6px; padding: 4px 8px; font-size: 12px; width: 140px; }
+.candidate-list { list-style: none; margin: 0; padding: 0; max-height: 240px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; }
+.candidate-list li {
+  display: grid; grid-template-columns: auto 1fr auto auto; gap: 8px; align-items: center;
+  border: 1px solid var(--border); border-radius: 6px; padding: 6px 8px; font-size: 12px;
+}
+.candidate-list li.is-disabled { background: #fef3f2; opacity: 0.9; }
+.candidate-list li.is-disabled .candidate-reason { grid-column: 1 / -1; color: #b42318; }
+.candidate-name { color: #0f172a; }
+.candidate-ver { color: var(--muted); }
+.candidate-reason { color: #b42318; font-size: 12px; }
+
+.drawer-actions { display: flex; gap: 10px; align-items: center; margin: 16px 0; }
+.hint-text { color: var(--muted); font-size: 12px; }
+
+.badge { display: inline-block; border-radius: 999px; padding: 2px 10px; font-size: 12px; white-space: nowrap; }
+.badge-ok { background: #dcfae6; color: #027a48; }
+.badge-bad { background: #fee4e2; color: #b42318; }
+
+.preview-panel { border-radius: 8px; padding: 12px 14px; margin-top: 12px; border: 1px solid var(--border); background: #fff; }
+.preview-ok { border-color: #abefc6; background: #f6fef9; }
+.preview-bad { border-color: #fda29b; background: #fffbfa; }
+.preview-head { display: flex; justify-content: space-between; gap: 10px; align-items: center; flex-wrap: wrap; }
+.preview-errors { margin: 10px 0 0; padding-left: 18px; color: #b42318; font-size: 13px; display: flex; flex-direction: column; gap: 4px; }
+.snapshot-line { margin-top: 10px; font-size: 12px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.snapshot-chip { background: #eef2ff; color: #3538cd; border-radius: 999px; padding: 2px 8px; font-size: 12px; }
+
+.ref-table { margin-top: 14px; }
+.ref-table h4 { margin: 0 0 6px; font-size: 13px; }
+.data-table.compact th, .data-table.compact td { padding: 6px 8px; font-size: 12px; }
+.data-table tr.row-invalid { background: #fef3f2; }
+.ambiguous-list { margin: 4px 0 0; padding-left: 16px; color: #b54708; }
+
+.rule-dep-card { border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; margin-top: 10px; background: #fff; }
+.rule-dep-head { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+
+@media (max-width: 960px) {
+  .form-grid, .candidate-block { grid-template-columns: 1fr; }
+}

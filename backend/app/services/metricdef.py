@@ -44,7 +44,23 @@ class MetricdefService:
         entry["pending"] = True
         entry["abnormal"] = False
         rows.append(entry)
+        # 新增候选会改变名称/编号的歧义判断，必须推进修订号。
+        store.bump_revision(MODULE)
         return entry, []
+
+    def update_entry(self, entry_id: int, values: dict[str, Any]) -> tuple[dict[str, Any] | None, str]:
+        """修改指标口径字段（如口径版本、计算公式）；任何字段变化都推进修订号。"""
+        entry = store.find(MODULE, entry_id)
+        if entry is None:
+            return None, f"指标口径 {entry_id} 不存在或已归档"
+        changed = False
+        for field in ("指标编号", "指标名称", "计算公式", "统计粒度", "时间窗口类型", "筛选条件", "精度位数", "口径版本"):
+            if field in values and str(values.get(field) or "") != str(entry.get(field) or ""):
+                entry[field] = values.get(field)
+                changed = True
+        if changed:
+            store.bump_revision(MODULE)
+        return entry, "指标口径已更新" if changed else "指标口径无变化"
 
     def run_action(self, entry_id: int, action: str) -> tuple[dict[str, Any] | None, str]:
         entry = store.find(MODULE, entry_id)
@@ -58,4 +74,6 @@ class MetricdefService:
         entry["status"] = target
         entry["pending"] = target != STATUS_ORDER[-1]
         entry["abnormal"] = action in NEGATIVE_ACTIONS
+        # 生效/废弃直接改变引用可用性，推进修订号让旧解析缓存失效。
+        store.bump_revision(MODULE)
         return entry, f"指标口径已{action}"

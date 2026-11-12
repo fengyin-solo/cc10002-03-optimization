@@ -85,3 +85,7 @@ desktop.ini
 *.db
 *.pid
 *.seed
+
+# 本地隔离的 Python 依赖目录
+.pydeps/
+.tmp_scripts/
